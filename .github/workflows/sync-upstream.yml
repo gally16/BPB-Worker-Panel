@@ -6,9 +6,7 @@ on:
   # 允许你手动在 Actions 页面触发此工作流
   workflow_dispatch:
   
-  # 定时任务：使用 CRON 表达式，这里代表每小时执行一次
-  # '0 * * * *' = 每小时的第0分钟执行
-  # '0 0 * * *' = 每天的零点执行
+  # 定时任务：使用 CRON 表达式，这里代表每天的零点执行
   schedule:
     - cron: '0 0 * * *'
 
@@ -18,15 +16,20 @@ jobs:
     # 作业运行的环境
     runs-on: ubuntu-latest
 
+    # !!! 核心修改：在这里为作业授予权限 !!!
+    permissions:
+      contents: write  # 授予向仓库推送内容的权限
+      workflows: write # 授予修改工作流文件的权限
+
     # 作业的步骤
     steps:
       # 第一步：检出（checkout）你的仓库代码
-      # 使用了别人写好的 action: actions/checkout@v3
+      # 更新到了最新的 v4 版本
       - name: Checkout Fork
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # 为了后续能够 push 代码，需要一个有写权限的 token
-          # GITHUB_TOKEN 是由 GitHub 自动提供的，你无需手动创建
+          # GITHUB_TOKEN 在添加了上面的 permissions 后，就会自动获得所需权限
           token: ${{ secrets.GITHUB_TOKEN }}
           # 获取所有历史记录，以便进行 rebase 或 merge
           fetch-depth: 0 
@@ -39,22 +42,16 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # 添加原始仓库（上游仓库）的远程地址
-          # !!! 重要：将下面的 URL 替换为原始仓库的 URL !!!
           git remote add upstream https://github.com/bia-pain-bache/BPB-Worker-Panel.git
           
           # 从上游仓库获取所有分支的最新内容
           git fetch upstream
           
-          # 切换到你想要同步的分支，通常是 main 或 master
-          # !!! 重要：如果你的默认分支不是 main，请修改为你的分支名 !!!
+          # 切换到你想要同步的分支，通常是 main
           git checkout main
           
           # 将上游仓库的更新合并到你的分支
-          # 这里使用 rebase 模式，可以使你的提交历史更整洁。
-          # 如果你不想用 rebase，可以换成 'git merge upstream/main'
           git rebase upstream/main
           
           # 将同步后的代码强制推送到你的 GitHub 仓库
-          # 因为 rebase 会改变历史，所以需要使用 --force
-          # 如果你用的是 merge，则可以只用 'git push'
           git push origin main --force
