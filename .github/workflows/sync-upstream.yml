@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     # !!! 核心修改：在这里为作业授予权限 !!!
-    permissions:
-      contents: write  # 授予向仓库推送内容的权限
-      workflows: write # 授予修改工作流文件的权限
+    #permissions:
+    #  contents: write  # 授予向仓库推送内容的权限
+    #  workflows: write # 授予修改工作流文件的权限
 
     # 作业的步骤
     steps:
