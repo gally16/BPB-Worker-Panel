@@ -12,10 +12,6 @@ on:
   schedule:
     - cron: '0 0 * * *'
     
-# 为工作流运行授予权限
-permissions:
-  contents: write
-  workflows: write
   
 # 定义一个或多个作业（job）
 jobs:
