@@ -11,7 +11,8 @@ on:
   # '0 0 * * *' = 每天的零点执行
   schedule:
     - cron: '0 0 * * *'
-
+    
+# 为工作流运行授予权限
 permissions:
   contents: write
   workflows: write
