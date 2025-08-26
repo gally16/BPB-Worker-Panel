@@ -12,6 +12,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  contents: write
+  workflows: write
+  
 # 定义一个或多个作业（job）
 jobs:
   sync:
