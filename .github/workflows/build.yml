@@ -31,14 +31,16 @@ jobs:
         with:
           node-version: "latest"
 
+          # 添加这一行，让 setup-node 自动处理缓存
+          cache: 'npm'
+
       - name: Install dependencies
-        run: |
-          rm -f package-lock.json  # 删除锁文件
-          npm cache clean --force  # 清理 npm 缓存
-          npm install              # 重新安装
+        # 使用 npm ci 更适合 CI 环境
+        run: npm ci
 
       - name: Build project
         run: npm run build
+
 
       - name: Read release note
         id: read_release
