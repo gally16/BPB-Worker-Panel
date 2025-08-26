@@ -32,7 +32,10 @@ jobs:
           node-version: "latest"
 
       - name: Install dependencies
-        run: npm install --production
+        run: |
+          rm -f package-lock.json  # 删除锁文件
+          npm cache clean --force  # 清理 npm 缓存
+          npm install              # 重新安装
 
       - name: Build project
         run: npm run build
