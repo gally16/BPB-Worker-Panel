@@ -9,13 +9,15 @@ on:
 
 # 定义作业
 jobs:
+  # 作业的 ID
   sync:
     # 作业运行的环境
     runs-on: ubuntu-latest
 
     # 为此作业授予权限
-    # 确保这里的 permissions 和 runs-on, steps 的缩进级别完全相同
+    # 这里的 permissions 和 runs-on, steps 必须在同一缩进级别 (4个空格)
     permissions:
+      # contents 和 workflows 必须在 permissions 下，有额外缩进 (6个空格)
       contents: write
       workflows: write
 
