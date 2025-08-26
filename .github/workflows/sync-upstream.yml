@@ -16,15 +16,15 @@ jobs:
     # 作业运行的环境
     runs-on: ubuntu-latest
 
-    # !!! 核心修改：在这里为作业授予权限 !!!
+    # 核心修改：为作业授予正确的权限
+    # 这将允许 Action 推送代码 (contents) 和修改工作流文件 (workflows)
     permissions:
-      contents: write  # 授予向仓库推送内容的权限
-      workflows: write # 授予修改工作流文件的权限
+      contents: write
+      workflows: write
 
     # 作业的步骤
     steps:
       # 第一步：检出（checkout）你的仓库代码
-      # 更新到了最新的 v4 版本
       - name: Checkout Fork
         uses: actions/checkout@v4
         with:
@@ -42,16 +42,19 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # 添加原始仓库（上游仓库）的远程地址
-          git remote add upstream https://github.com/bia-pain-bache/BPB-Worker-Panel.git
+          # 如果远程地址 'upstream' 已存在，则忽略错误继续执行
+          git remote add upstream https://github.com/bia-pain-bache/BPB-Worker-Panel.git || true
           
-          # 从上游仓库获取所有分支的最新内容
+          # 从上游仓库获取所有分支和标签的最新内容
           git fetch upstream
           
-          # 切换到你想要同步的分支，通常是 main
+          # 确保在 main 分支上操作
           git checkout main
           
-          # 将上游仓库的更新合并到你的分支
+          # 将本地的 main 分支重置为上游仓库的 main 分支
+          # rebase 是一个很好的选择，它能保持你的提交历史干净
           git rebase upstream/main
           
-          # 将同步后的代码强制推送到你的 GitHub 仓库
+          # 将同步后的代码强制推送到你自己的 GitHub 仓库
+          # 使用 --force 是因为 rebase 会重写提交历史
           git push origin main --force
